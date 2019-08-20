@@ -1,5 +1,5 @@
 <div align="left">
-  <img src="https://github.com/hochej/QBlend/blob/master/docs/logo.svg" height="120"/>
+  <img src="https://github.com/hochej/QBlend/blob/master/docs/logo.svg" height="110"/>
 </div>
 
 3D Molecular Visualization in Blender
