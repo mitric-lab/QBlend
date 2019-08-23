@@ -6,6 +6,8 @@
 ===============================================
 [![Build Status](https://travis-ci.org/hochej/QBlend.svg?branch=master)](https://travis-ci.org/hochej/QBlend)
 
+### Examples
+
 
 ### Getting Started
 
