@@ -8,3 +8,7 @@
 
 
 ### Getting Started
+
+1. Open Blender 2.7X
+2. Switch from the 3D editor the text editor
+![alt text](https://github.com/hochej/QBlend/blob/master/docs/anl1.png "Logo Title Text 1")
