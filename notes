@@ -1,0 +1,24 @@
+import bpy
+import time
+
+a = time.time()
+bpy.ops.mesh.primitive_cube_add()
+obj = bpy.context.active_object
+obj.modifiers.new(type="SUBSURF", name="subsurf")
+obj.modifiers["subsurf"].levels = 4
+obj.modifiers["subsurf"].render_levels = 6
+obj.modifiers.new(type="CAST", name="cast")
+obj.modifiers["cast"].factor = 1.
+me = obj.data
+me.name = "EINS"
+
+for i in range(1000):
+    obj  = bpy.data.objects.new(str(i).zfill(4), me)
+    obj.modifiers.new(type="SUBSURF", name="subsurf")
+    obj.modifiers["subsurf"].levels = 4
+    obj.modifiers["subsurf"].render_levels = 6
+    obj.modifiers.new(type="CAST", name="cast")
+    obj.modifiers["cast"].factor = 1.
+    bpy.context.collection.objects.link(obj)
+
+print(time.time()-a)
