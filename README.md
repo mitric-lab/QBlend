@@ -6,7 +6,7 @@
 ===============================================
 [![Build Status](https://travis-ci.org/hochej/QBlend.svg?branch=master)](https://travis-ci.org/hochej/QBlend)
 
-### Examples
+### Examples (Gallery)
 
 
 ### Getting Started
@@ -16,7 +16,7 @@
 ![alt text](https://github.com/hochej/QBlend/blob/master/docs/anl2.png "Logo Title Text 1")
 3. Open the python script
 ![alt text](https://github.com/hochej/QBlend/blob/master/docs/anl3.png "Logo Title Text 1")
-4. And run it without any changes. 
+4. And run it without any changes.
 ![alt text](https://github.com/hochej/QBlend/blob/master/docs/anl4.png "Logo Title Text 1")
 5. Now there is an extra section called "Molecule" in the toolbar (show/hide by pressing "t").
 ![alt text](https://github.com/hochej/QBlend/blob/master/docs/anl5.png "Logo Title Text 1")
