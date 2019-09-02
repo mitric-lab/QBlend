@@ -20,6 +20,7 @@ import bpy
 classes = ( panel.ToggleButtons,
             panel.OBJECT_OT_import_structure_button,
             panel.OBJECT_OT_xyz_path,
+            panel.OBJECT_OT_cube_path,
             panel.PANEL_PT_molecule_panel,
           )
 """

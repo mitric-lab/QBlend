@@ -21,6 +21,11 @@ bpy.types.Scene.MyString = StringProperty(name="Path:",
     maxlen= 1024,
     default= "")#this set the text
 
+bpy.types.Scene.MyString2 = StringProperty(name="Path:",
+    attr="cube_path",# this a variable that will set or get from the scene
+    description="simple file path",
+    maxlen= 1024,
+    default= "")#this set the text
 
 bpy.types.Scene.MyPath = StringProperty(name="file path",
     attr="xyz_path",# this a variable that will set or get from the scene
@@ -71,42 +76,52 @@ class PANEL_PT_molecule_panel(View3DPanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        #layout.label(text="Import Molecule")
+        #box.label(text="Import Molecule")
         box = layout.box()
 
         box.operator("object.xyz_path")
         box.prop(context.scene,"MyString")
 
-        row = layout.row()
+        row = box.row()
         row.label(text="Style")
         row.prop(context.window_manager.toggle_buttons, 'style', expand=True)
+        if context.window_manager.toggle_buttons.style != "vdw":
+            row = box.row()
+            row.label(text="Stick size")
+            row.prop(context.window_manager.toggle_buttons, "stick_size", expand=True)
         # style = context.window_manager.style_toggle.style
-        row = layout.row()
+        row = box.row()
         row.label(text="Shader")
         row.prop(context.window_manager.toggle_buttons, 'shader', expand=True)
         #shader = context.window_manager.shader_toggle.shader
         if context.window_manager.toggle_buttons.shader != "Diffuse":
-            row = layout.row()
+            row = box.row()
             row.prop(context.window_manager.toggle_buttons, "roughness")
-        row = layout.row()
+        row = box.row()
         row.prop(context.window_manager.toggle_buttons, "carbon_color")
-        row = layout.row()
+        row = box.row()
         row.prop(context.window_manager.toggle_buttons, "hbonds")
         if context.window_manager.toggle_buttons.hbonds:
-            row = layout.row()
+            row = box.row()
             row.prop(context.window_manager.toggle_buttons, "hbond_color")
-            row = layout.row()
+            row = box.row()
             row.prop(context.window_manager.toggle_buttons, "hbond_dist")
             row.prop(context.window_manager.toggle_buttons, "hbond_tresh")
-        row = layout.row()
+        row = box.row()
         row.prop(context.window_manager.toggle_buttons, "charges")
-        row = layout.row()
+        row = box.row()
         row.prop(context.window_manager.toggle_buttons, "vectors")
         if context.window_manager.toggle_buttons.vectors:
-            row = layout.row()
+            row = box.row()
             row.prop(context.window_manager.toggle_buttons, "vector_color")
-        row = layout.row()
+        row = box.row()
         row.operator("object.import_structure_button")
+
+        layout.row().separator()
+
+        box = layout.box()
+        box.operator("object.cube_path")
+        box.prop(context.scene,"MyString2")
 
 
 class ToggleButtons(bpy.types.PropertyGroup):
@@ -118,6 +133,14 @@ class ToggleButtons(bpy.types.PropertyGroup):
         ('vdw', 'vdW', 'Use van-der-Waals representation', '', 2)
     ],
     default='cpk'
+)
+    stick_size : bpy.props.EnumProperty(
+    items=[
+        ('1', '1', 'Use small sticksize', '', 0),
+        ('2', '2', 'Use medium sticksize', '', 1),
+        ('3', '3', 'Use large sticksize', '', 2)
+    ],
+    default='2'
 )
     shader : bpy.props.EnumProperty(
     items=[
@@ -236,7 +259,7 @@ class OBJECT_OT_xyz_path(bpy.types.Operator):
 
     #this can be look into the one of the export or import python file.
     #need to set a path so so we can get the file name and path
-    filepath : StringProperty(name="File Path", description="Filepath iles", maxlen= 1024, default= "")
+    filepath : StringProperty(name="File Path", description="Filepath files", maxlen= 1024, default= "")
     files : CollectionProperty(
         name="File Path",
         type=bpy.types.OperatorFileListElement,
@@ -254,9 +277,46 @@ class OBJECT_OT_xyz_path(bpy.types.Operator):
         print("FILEPATH %s"%self.properties.filepath)#display the file name and current path
         return {'FINISHED'}
 
+    def draw(self, context):
+        self.box.operator('file.select_all_toggle')
+    def invoke(self, context, event):
+        wm = context.window_manager
+        wm.fileselect_add(self)
+        return {'RUNNING_MODAL'}
+
+
+class OBJECT_OT_cube_path(bpy.types.Operator):
+    bl_idname = "object.cube_path"
+    bl_label = "Select cube Files"
+    __doc__ = ""
+
+
+    filename_ext = ".cube"
+    filter_glob : StringProperty(default="*.cub*", options={'HIDDEN'})
+
+
+    #this can be look into the one of the export or import python file.
+    #need to set a path so so we can get the file name and path
+    filepath : StringProperty(name="File Path", description="Filepath files", maxlen= 1024, default= "")
+    files : CollectionProperty(
+        name="File Path",
+        type=bpy.types.OperatorFileListElement,
+        )
+    def execute(self, context):
+        #set the string path fo the file here.
+        #this is a variable created from the top to start it
+        bpy.context.scene.MyString2 = self.properties.filepath
+
+
+        print("*************SELECTED FILES ***********")
+        for file in self.files:
+            print(file.name)
+
+        print("FILEPATH %s"%self.properties.filepath)#display the file name and current path
+        return {'FINISHED'}
 
     def draw(self, context):
-        self.layout.operator('file.select_all_toggle')
+        self.box.operator('file.select_all_toggle')
     def invoke(self, context, event):
         wm = context.window_manager
         wm.fileselect_add(self)
