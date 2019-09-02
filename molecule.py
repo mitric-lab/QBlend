@@ -85,6 +85,8 @@ default_options = AttrDict({
 	'colors': Colors,
 	'materials': Materials,
 
+	'carbon_color': getColor('darkgrey'),
+
 	'shader': "Diffuse",
 	'roughness': 0.5,
 
@@ -394,14 +396,17 @@ class ReprBase(ObjectCollection):
 				if isinstance(colors, (str,tuple)):
 					break
 				if isinstance(colors, dict) and arg in colors:
-					colors = colors[arg]
+					if arg == 6:
+						colors = self.options.carbon_color
+					else:
+						colors = colors[arg]
 					col_id += '-'+ str(arg)
 				elif None in colors:
 					colors = colors[None]
 				else:
 					colors = self.options.colors[None]
 					break
-			if isinstance(colors, tuple):
+			if isinstance(colors, tuple) or len(colors) == 4:
 				col = colors
 			elif isinstance(colors, str):
 				col = getColor(col_type)

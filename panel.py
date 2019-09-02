@@ -125,7 +125,7 @@ class ToggleButtons(bpy.types.PropertyGroup):
         ('Glossy', 'Glossy', 'Use glossy shader', '', 1),
         ('Principled', 'Plastic', 'Use Principled BSDF shader', '', 2)
     ],
-    default='Diffuse'
+    default='Principled'
 )
     carbon_color : bpy.props.FloatVectorProperty(
                                      name = "Carbon Color",
@@ -133,7 +133,7 @@ class ToggleButtons(bpy.types.PropertyGroup):
                                      size = 4,
                                      min = 0.0,
                                      max = 1.0,
-                                     default = (0.3,0.3,0.3,1.0),
+                                     default = (0.1,0.1,0.1,1.0),
                                      description = "Color of carbon atoms"
                                      )
 
@@ -210,10 +210,12 @@ class OBJECT_OT_import_structure_button(bpy.types.Operator):
 
         bmol = Molecule(auto_bonds=True, align_com = False, atom_scale=1.)
         reader = XyzFile("/Users/hochej/14.xyz", "r")
+        #reader = XyzFile(bpy.context.scene.MyString)
         bmol.options.shader = shader
         bmol.options.roughness = roughness
         if style == "vdw":
             bmol.options.atom_size = "vdw_radius"
+        bmol.options.carbon_color = context.window_manager.toggle_buttons.carbon_color
         reader.read(bmol)
         print("BEGIN0")
         bmol.add_repr(style)
