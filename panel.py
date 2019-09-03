@@ -123,6 +123,21 @@ class PANEL_PT_molecule_panel(View3DPanel, bpy.types.Panel):
         box.operator("object.cube_path")
         box.prop(context.scene,"MyString2")
 
+        row = box.row()
+        row.label(text="Isovalue")
+        #row = box.row()
+        row.prop(context.window_manager.toggle_buttons, "isovalue1")
+        row.label(text="x 10^")
+        row.prop(context.window_manager.toggle_buttons, "isovalue2")
+        row = box.row()
+        row.prop(context.window_manager.toggle_buttons, "pos_color")
+
+        row = box.row()
+        row.prop(context.window_manager.toggle_buttons, "neg_color")
+
+        row = box.row()
+        row.operator("object.import_cube_button")
+
 
 class ToggleButtons(bpy.types.PropertyGroup):
     # (unique identifier, property name, property description, icon identifier, number)
@@ -207,6 +222,32 @@ class ToggleButtons(bpy.types.PropertyGroup):
                 X_VALUE   Y_VALUE   Z_VALUE
                 ... (for each atom 1 vector)""")
 
+    isovalue1: bpy.props.FloatProperty(name="", default=2.0, soft_min=0.0, soft_max=10.0,
+                                        min=0.0, max=10.0, description="""Isovalue for cube""")
+    isovalue2: bpy.props.IntProperty(name="", default=-2, soft_min=-5, soft_max=2,
+                                        min=-7, max=5, description="""Isovalue for cube""")
+
+    pos_color : bpy.props.FloatVectorProperty(
+                                     name = "Positive Lobe Color",
+                                     subtype = "COLOR",
+                                     size = 4,
+                                     min = 0.0,
+                                     max = 1.0,
+                                     default = (0.0,0.0,1.0,1.0),
+                                     description = "Color of carbon atoms"
+                                     )
+
+    neg_color : bpy.props.FloatVectorProperty(
+                                     name = "Negative Lobe Color",
+                                     subtype = "COLOR",
+                                     size = 4,
+                                     min = 0.0,
+                                     max = 1.0,
+                                     default = (0.9,0.0,0.0,1.0),
+                                     description = "Color of negative lobe"
+                                     )
+
+
 class OBJECT_OT_import_structure_button(bpy.types.Operator):
     bl_idname = "object.import_structure_button"
     bl_label = "Import Structure"
@@ -246,6 +287,44 @@ class OBJECT_OT_import_structure_button(bpy.types.Operator):
         bmol.create()
 
         return{'FINISHED'}
+
+
+class OBJECT_OT_import_cube_button(bpy.types.Operator):
+    bl_idname = "object.import_cube_button"
+    bl_label = "Import Cube File"
+    __doc__ = "Simple Custom Button"
+
+    def invoke(self, context, event):
+        #when the button is press it print this to the log
+        print("Load Molecule")
+        print("path:",bpy.context.scene.MyString2)
+        import sys
+        sys.path.append("/Applications/blender.app/Contents/Resources/2.80/scripts/addons/qblend/")
+        from lib.io import XyzFile
+        from .molecule import Molecule
+        from .base import Object
+        from .meshes import Cube, UVsphere
+        from lib.io import CubeFile
+
+        isovalue1  = context.window_manager.toggle_buttons.isovalue1
+        isovalue2 = context.window_manager.toggle_buttons.isovalue2
+        iso1 = isovalue1 * 10**(isovalue2)
+        bmol = Molecule(auto_bonds=True, align_com = True)
+        bmol.add_repr('cpk')
+        reprTD = bmol.add_repr('isosurface', "TD", "CubeData", [iso1, -iso1],
+                                draw_box=False, on_update='remove')
+
+
+        cube = CubeFile(bpy.context.scene.MyString2)
+        cube.read(bmol)
+
+        bmol.create()
+        #object = Cube()
+        #object2 = UVsphere()
+        #from .Blender import clear_objects, save_blend, render_image
+
+        return{'FINISHED'}
+
 
 class OBJECT_OT_xyz_path(bpy.types.Operator):
     bl_idname = "object.xyz_path"
@@ -287,7 +366,7 @@ class OBJECT_OT_xyz_path(bpy.types.Operator):
 
 class OBJECT_OT_cube_path(bpy.types.Operator):
     bl_idname = "object.cube_path"
-    bl_label = "Select cube Files"
+    bl_label = "Select Cube Files"
     __doc__ = ""
 
 

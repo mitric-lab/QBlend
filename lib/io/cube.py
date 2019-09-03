@@ -36,7 +36,7 @@ class CubeFile(MoleculeFile):
             natoms, origin = int(line[0]), np.array(line[1:4], dtype=float)
 
             if natoms > 0:
-                lconv = from_angstrom(1.0)
+                lconv = 1.#from_angstrom(1.0)
             natoms = abs(natoms)
 
             origin *= lconv

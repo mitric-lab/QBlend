@@ -325,7 +325,7 @@ class Molecule(SlotPickleMixin):
                         conn[ii].append(jj)
                         conn[jj].append(ii)
                         nbonds += 1
-
+        print("BOONDS", conn, nbonds, len(self))
         self._bonds = Bonds(conn, nbonds, len(self))
 
 
