@@ -1,4 +1,4 @@
 language: python
 script:
-  - cd io
+  - cd QBlend/io
   - python atom.py
