@@ -1,4 +1,4 @@
 language: python
 script:
-  - cd QBlend/io
+  - cd $TRAVIS_BUILD_DIR/io
   - python atom.py
