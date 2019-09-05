@@ -1,4 +1,4 @@
 language: python
 script:
-  - cd $TRAVIS_BUILD_DIR/lib/io
+  - cd $TRAVIS_BUILD_DIR/lib
   - python atom.py
