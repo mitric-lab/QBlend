@@ -18,14 +18,8 @@ from lib.volume import BoundaryVolumeData
 atom_radii_period = {1: 0.4, 2: 0.7, 3: 1.0, 4: 1.3, 5: 1.7}
 
 def make_atom_material(name):#, color=(0., 0., 1., 1), shader="Glossy", roughness=0.0):
-	"""
-	name = name + "_" + shader
-	if name in bpy.data.materials:
-		return bpy.data.materials[name]
-	"""
 	mat = bpy.data.materials.new(name) # create new material
 	mat.use_nodes = True # use nodes
-	 # delete default principled shader
 	return mat
 
 """
@@ -40,12 +34,9 @@ def make_atom_material(name, **kw):
 """
 
 def make_lobe_material(name, **kw):
-	mat = {
-		#'diffuse_color': (.2, .2, .2)
-		}
-	for k, v in mat.items():
-		kw[k] = v if k not in kw else kw[k]
-	return make_lazy_material(name, **kw)
+	mat = bpy.data.materials.new(name) # create new material
+	mat.use_nodes = True # use nodes
+	return mat
 
 
 Materials = {
@@ -90,7 +81,7 @@ default_options = AttrDict({
 	'shader': "Diffuse",
 	'roughness': 0.5,
 
-	'atom_scale': 3.,
+	'atom_scale': 1.,
 	'stick_size': 0.2,
 	'line_size':  0.05,
 
@@ -98,7 +89,7 @@ default_options = AttrDict({
 	'ball_resolution': 6,
 
 	'atom_size':	 'period',
-	'atom_style':	'nurbs',
+	'atom_style':	'Nurbs',
 	'atom_color':	'Element',
 	'atom_material': 'Atom',
 
@@ -452,6 +443,9 @@ class ReprBase(ObjectCollection):
 	def make_material(self, mat, col, *args):
 		mat = self.material(mat, *args)
 		col_id, col = self.color(col, *args)
+		if len(args) == 1 and type(args[0]) == int and type(col) == dict:
+			iso = args[0]
+			col = col[iso]
 		name = mat.name + "-"+ str(col_id)
 		shader = self.options.shader
 		roughness = self.options.roughness

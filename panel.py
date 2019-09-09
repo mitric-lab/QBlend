@@ -130,11 +130,19 @@ class PANEL_PT_molecule_panel(View3DPanel, bpy.types.Panel):
         row.label(text="x 10^")
         row.prop(context.window_manager.toggle_buttons, "isovalue2")
         row = box.row()
+        row.label(text="Shader")
+        row.prop(context.window_manager.toggle_buttons, 'shader', expand=True)
+        if context.window_manager.toggle_buttons.shader != "Diffuse":
+            row = box.row()
+            row.prop(context.window_manager.toggle_buttons, "roughness")
+        row = box.row()
         row.prop(context.window_manager.toggle_buttons, "pos_color")
 
         row = box.row()
         row.prop(context.window_manager.toggle_buttons, "neg_color")
 
+        row = box.row()
+        row.prop(context.window_manager.toggle_buttons, "alpha_cube")
         row = box.row()
         row.operator("object.import_cube_button")
 
@@ -165,6 +173,22 @@ class ToggleButtons(bpy.types.PropertyGroup):
     ],
     default='Principled'
 )
+
+    shader_cube : bpy.props.EnumProperty(
+    items=[
+        ('Diffuse', 'Diffuse', 'Use diffuse shader', '', 0),
+        ('Glossy', 'Glossy', 'Use glossy shader', '', 1),
+        ('Principled', 'Plastic', 'Use Principled BSDF shader', '', 2)
+    ],
+    default='Principled'
+)
+
+    roughness_cube : bpy.props.FloatProperty(name="Roughness", default=0, soft_min=0.0, soft_max=1.0,
+                                        min=0.0, max=1.0)
+
+    alpha_cube : bpy.props.FloatProperty(name="Transparency", default=0, soft_min=0.0, soft_max=1.0,
+                                        min=0.0, max=1.0)
+
     carbon_color : bpy.props.FloatVectorProperty(
                                      name = "Carbon Color",
                                      subtype = "COLOR",
@@ -268,14 +292,19 @@ class OBJECT_OT_import_structure_button(bpy.types.Operator):
         #object2 = UVsphere()
         #from .Blender import clear_objects, save_blend, render_image
 
+        s_size = [0.15, 0.2, 0.25]
+        stick_size = int(context.window_manager.toggle_buttons.stick_size)
+        stick_size = s_size[stick_size-1]
         style = context.window_manager.toggle_buttons.style
         shader = context.window_manager.toggle_buttons.shader
         roughness = context.window_manager.toggle_buttons.roughness
 
         bmol = Molecule(auto_bonds=True, align_com = False, atom_scale=1.)
-        reader = XyzFile("/Users/hochej/14.xyz", "r")
-        #reader = XyzFile(bpy.context.scene.MyString)
+        bmol.options.atom_scale = 1.0
+        #reader = XyzFile("/Users/hochej/14.xyz", "r")
+        reader = XyzFile(bpy.context.scene.MyString)
         bmol.options.shader = shader
+        bmol.options.stick_size = stick_size
         bmol.options.roughness = roughness
         if style == "vdw":
             bmol.options.atom_size = "vdw_radius"
@@ -306,11 +335,29 @@ class OBJECT_OT_import_cube_button(bpy.types.Operator):
         from .meshes import Cube, UVsphere
         from lib.io import CubeFile
 
+        s_size = [0.15, 0.2, 0.25]
+        stick_size = int(context.window_manager.toggle_buttons.stick_size)
+        stick_size = s_size[stick_size-1]
+        style = context.window_manager.toggle_buttons.style
+        shader = context.window_manager.toggle_buttons.shader
+        roughness = context.window_manager.toggle_buttons.roughness
+        shader_c = context.window_manager.toggle_buttons.shader_cube
+        roughness_c = context.window_manager.toggle_buttons.roughness_cube
         isovalue1  = context.window_manager.toggle_buttons.isovalue1
         isovalue2 = context.window_manager.toggle_buttons.isovalue2
         iso1 = isovalue1 * 10**(isovalue2)
+
         bmol = Molecule(auto_bonds=True, align_com = True)
-        bmol.add_repr('cpk')
+        bmol.options.stick_size = stick_size
+        bmol.options.atom_scale = 1.0
+        bmol.options.shader = shader
+        bmol.options.roughness = roughness
+        if style == "vdw":
+            bmol.options.atom_size = "vdw_radius"
+        bmol.options.carbon_color = context.window_manager.toggle_buttons.carbon_color
+        bmol.add_repr(style)
+        bmol.options.shader = shader_c
+        bmol.options.roughness = roughness_c
         reprTD = bmol.add_repr('isosurface', "TD", "CubeData", [iso1, -iso1],
                                 draw_box=False, on_update='remove')
 
@@ -319,10 +366,6 @@ class OBJECT_OT_import_cube_button(bpy.types.Operator):
         cube.read(bmol)
 
         bmol.create()
-        #object = Cube()
-        #object2 = UVsphere()
-        #from .Blender import clear_objects, save_blend, render_image
-
         return{'FINISHED'}
 
 
@@ -357,7 +400,7 @@ class OBJECT_OT_xyz_path(bpy.types.Operator):
         return {'FINISHED'}
 
     def draw(self, context):
-        self.box.operator('file.select_all_toggle')
+        self.layout.box().operator('file.select_all_toggle')
     def invoke(self, context, event):
         wm = context.window_manager
         wm.fileselect_add(self)
@@ -395,7 +438,7 @@ class OBJECT_OT_cube_path(bpy.types.Operator):
         return {'FINISHED'}
 
     def draw(self, context):
-        self.box.operator('file.select_all_toggle')
+        self.layout.box().operator('file.select_all_toggle')
     def invoke(self, context, event):
         wm = context.window_manager
         wm.fileselect_add(self)

@@ -57,7 +57,7 @@ class Mesh(Object):
 
     def remove_doubles(self):
         if self.linked:
-            bpy.context.scene.objects.active = self.bpy
+            bpy.context.view_layer.objects.active = self.bpy
             bpy.ops.object.editmode_toggle()
             bpy.ops.mesh.remove_doubles(threshold=0.0001)
             bpy.ops.object.editmode_toggle()
@@ -109,7 +109,7 @@ def UVsphere(name = 'UVsphere',
         segments=int(segments), ring_count=int(rings), \
         radius=float(radius), location=Vector(location) ) #, layers=[True]+[False]*19)
 
-    obj = Blender.active_object
+    obj = Mesh(Blender.active_object)
     obj.name = name
     return Mesh(obj, *args, **kw)
 
