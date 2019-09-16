@@ -11,7 +11,7 @@
 
 
 
-### Getting Started
+### Getting Started (2.79)
 
 1. Open Blender 2.8X
 2. Switch from the 3D editor the text editor
