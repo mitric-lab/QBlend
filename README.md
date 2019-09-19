@@ -3,7 +3,7 @@
 </div>
 
 3D Molecular Visualization in Blender 2.8X
-===============================================
+=============================================
 [![Build Status](https://travis-ci.org/hochej/QBlend.svg?branch=master)](https://travis-ci.org/hochej/QBlend)
 
 ### Examples (Gallery)
