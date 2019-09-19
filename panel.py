@@ -146,6 +146,18 @@ class PANEL_PT_molecule_panel(View3DPanel, bpy.types.Panel):
         row = box.row()
         row.operator("object.import_cube_button")
 
+        box = layout.box()
+        # automatic lightning
+        # brightness
+        row = box.row()
+        row.operator("object.automatic_ligthning_button")
+
+        row = box.row()
+        row.operator("object.lookdev_button")
+        row.operator("object.rendered_button")
+
+        row = box.row()
+
 
 class ToggleButtons(bpy.types.PropertyGroup):
     # (unique identifier, property name, property description, icon identifier, number)
@@ -252,7 +264,7 @@ class ToggleButtons(bpy.types.PropertyGroup):
                                         min=-7, max=5, description="""Isovalue for cube""")
 
     pos_color : bpy.props.FloatVectorProperty(
-                                     name = "Positive Lobe Color",
+                                     name = "Positive Color",
                                      subtype = "COLOR",
                                      size = 4,
                                      min = 0.0,
@@ -262,7 +274,7 @@ class ToggleButtons(bpy.types.PropertyGroup):
                                      )
 
     neg_color : bpy.props.FloatVectorProperty(
-                                     name = "Negative Lobe Color",
+                                     name = "Negative Color",
                                      subtype = "COLOR",
                                      size = 4,
                                      min = 0.0,
@@ -367,6 +379,70 @@ class OBJECT_OT_import_cube_button(bpy.types.Operator):
 
         bmol.create()
         return{'FINISHED'}
+
+
+class OBJECT_OT_automatic_ligthning_button(bpy.types.Operator):
+    bl_idname = "object.automatic_ligthning_button"
+    bl_label = "Use Studiolights"
+    __doc__ = "Simple Custom Button"
+
+    def invoke(self, context, event):
+        #when the button is press it print this to the log
+        import sys
+        sys.path.append("/Applications/blender.app/Contents/Resources/2.80/scripts/addons/qblend/")
+
+        world_tree = bpy.data.worlds[0].node_tree
+        w_out = world_tree.nodes['World Output']
+        mixer = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeMixShader")
+        env = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeTexEnvironment")
+        bg1 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeBackground")
+        bg2 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeBackground")
+
+        light_p = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeLightPath")
+
+        world_tree.links.new(light_p.outputs['Is Camera Ray'], mixer.inputs[0])
+        world_tree.links.new(bg1.outputs["Background"], mixer.inputs[1])
+        world_tree.links.new(bg2.outputs["Background"], mixer.inputs[2])
+        world_tree.links.new(mixer.outputs['Shader'], w_out.inputs['Surface'])
+        world_tree.links.new(env.outputs['Color'], bg1.inputs['Color'])
+
+        a = 0.035
+        bg2.inputs['Color'].default_value = [a, a, a, 1.]
+
+        path = "/Applications/blender.app/Contents/Resources/2.80/datafiles/studiolights/world/forest.exr"
+        env.image = bpy.data.images.load(path)
+
+        bpy.context.scene.render.alpha_mode = 'TRANSPARENT'
+
+        return{'FINISHED'}
+
+
+class OBJECT_OT_lookdev_button(bpy.types.Operator):
+    bl_idname = "object.lookdev_button"
+    bl_label = "Material View"
+    __doc__ = "Simple Custom Button"
+
+    def invoke(self, context, event):
+        #when the button is press it print this to the log
+        area = next(area for area in bpy.context.screen.areas if area.type == 'VIEW_3D')
+        space = next(space for space in area.spaces if space.type == 'VIEW_3D')
+        space.shading.type = 'MATERIAL'  # set the viewport shading
+
+        return{'FINISHED'}
+
+class OBJECT_OT_rendered_button(bpy.types.Operator):
+    bl_idname = "object.rendered_button"
+    bl_label = "Rendered View"
+    __doc__ = "Simple Custom Button"
+
+    def invoke(self, context, event):
+        #when the button is press it print this to the log
+        area = next(area for area in bpy.context.screen.areas if area.type == 'VIEW_3D')
+        space = next(space for space in area.spaces if space.type == 'VIEW_3D')
+        space.shading.type = 'RENDERED'  # set the viewport shading
+
+        return{'FINISHED'}
+
 
 
 class OBJECT_OT_xyz_path(bpy.types.Operator):
