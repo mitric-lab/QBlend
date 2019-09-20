@@ -122,7 +122,7 @@ def get_max_threads():
 
 __lib_config = {
 	'resolution': 1,
-	'auto_animate': False,
+	'auto_animate': True,
 	'auto_shade_smooth': True,
 	'nthreads': 1,
 

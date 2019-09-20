@@ -189,8 +189,8 @@ class TwoColorBond(ObjectCollection):
 			c2.data.bevel_depth = c1.data.bevel_depth = size
 			c2.data.bevel_resolution = c1.data.bevel_resolution = resolution
 			c2.data.fill_mode = c1.data.fill_mode = 'FULL'
-			c1.addAutoKey('data.splines.points.co', 'hide', 'hide_render')
-			c2.addAutoKey('data.splines.points.co', 'hide', 'hide_render')
+			c1.addAutoKey('data.splines.points.co', 'hide_viewport', 'hide_render')
+			c2.addAutoKey('data.splines.points.co', 'hide_viewport', 'hide_render')
 		else:
 			raise ValueError(style)
 
@@ -265,7 +265,7 @@ class NurbsBond(curves.Curve):
 		self.data.bevel_depth = size
 		self.data.bevel_resolution = resolution
 		self.data.fill_mode = 'FULL'
-		self.addAutoKey('data.splines.points.co', 'hide', 'hide_render')
+		self.addAutoKey('data.splines.points.co', 'hide_viewport', 'hide_render')
 
 		if material:
 			self.material = material
@@ -625,7 +625,7 @@ class MoleculeRepr(ReprBase):
 		obj = make_bond(iobj, jobj, size, bond_style, twocolor, bond_reso)
 		obj.name = name
 		obj.hide = True
-		obj.notify('hide', 'hide_render', frame=-1000)
+		obj.notify('hide_viewport', 'hide_render', frame=-1000)
 		obj.hide = False
 
 		self.bond_objects[(i,j)] = obj
@@ -773,7 +773,7 @@ class RingsRepr(ReprBase):
 		obj = meshes.Mesh("Ring")
 		obj.create(verts, edges, [range(len(ring))])
 		obj.material = mat
-		obj.addAutoKey('data.vertices.co', 'hide', 'hide_render')
+		obj.addAutoKey('data.vertices.co', 'hide_viewport', 'hide_render')
 
 		self.append(obj)
 		self._rings[tuple(ring)] = obj
@@ -1132,6 +1132,7 @@ class Molecule(pymol.Molecule):
 		if len(self.atoms) and self.options.auto_bonds:
 			print("Compute Bonds (tol=%f)" % self.options.bond_tolerance)
 			self.generate_bonds()
+
 		if len(self.atoms) and self.options.align_com:
 			print("Align COM")
 			self.translate(-self.com)
@@ -1140,9 +1141,6 @@ class Molecule(pymol.Molecule):
 			Blender.nextFrame()
 
 		for r in self.repr:
-			if r.created:
-				print("Update Representation:", r.name)
-				r.update(self, *args, **kw)
-			else:
-				print("Create Representation:", r.name)
-				r.create(self, *args, **kw)
+
+			print("Update Representation:", r.name)
+			r.update(self, *args, **kw)

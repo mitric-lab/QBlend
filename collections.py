@@ -69,7 +69,7 @@ class ObjectCollection(Object):
 
     @property
     def hide(self):
-        value = self.getobjattr('hide') and self.getobjattr('hide_render')
+        value = self.getobjattr('hide_viewport') and self.getobjattr('hide_render')
         for o in self:
             value = value and o.hide
         return value
@@ -77,7 +77,7 @@ class ObjectCollection(Object):
     def hide(self, value):
         for o in self:
             o.hide = bool(value)
-        self.setobjattr('hide', bool(value))
+        self.setobjattr('hide_viewport', bool(value))
         self.setobjattr('hide_render', bool(value))
 
     @property

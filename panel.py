@@ -100,6 +100,10 @@ class PANEL_PT_molecule_panel(View3DPanel, bpy.types.Panel):
         row = box.row()
         row.prop(context.window_manager.toggle_buttons, "carbon_color")
         row = box.row()
+
+        row.prop(context.window_manager.toggle_buttons, "trajectory")
+
+        row = box.row()
         row.prop(context.window_manager.toggle_buttons, "hbonds")
         if context.window_manager.toggle_buttons.hbonds:
             row = box.row()
@@ -146,9 +150,12 @@ class PANEL_PT_molecule_panel(View3DPanel, bpy.types.Panel):
         row = box.row()
         row.operator("object.import_cube_button")
 
+        layout.row().separator()
         box = layout.box()
         # automatic lightning
         # brightness
+        row = box.row()
+        row.label(text="General Settings")
         row = box.row()
         row.operator("object.automatic_ligthning_button")
 
@@ -242,6 +249,9 @@ class ToggleButtons(bpy.types.PropertyGroup):
                                      description = "Color of vector arrows (Principled Shader)"
                                      )
 
+    trajectory : bpy.props.BoolProperty(name="as Trajectory",
+                description=" dasd" )
+
     charges : bpy.props.BoolProperty(name="Read and Show Charges",
                 description="""Expects the following type of xyz file:
                 [NUMBER OF ATOMS]
@@ -311,6 +321,8 @@ class OBJECT_OT_import_structure_button(bpy.types.Operator):
         shader = context.window_manager.toggle_buttons.shader
         roughness = context.window_manager.toggle_buttons.roughness
 
+        traj = context.window_manager.toggle_buttons.trajectory
+
         bmol = Molecule(auto_bonds=True, align_com = False, atom_scale=1.)
         bmol.options.atom_scale = 1.0
         #reader = XyzFile("/Users/hochej/14.xyz", "r")
@@ -321,11 +333,17 @@ class OBJECT_OT_import_structure_button(bpy.types.Operator):
         if style == "vdw":
             bmol.options.atom_size = "vdw_radius"
         bmol.options.carbon_color = context.window_manager.toggle_buttons.carbon_color
-        reader.read(bmol)
+        read_status = reader.read(bmol)
         print("BEGIN0")
         bmol.add_repr(style)
         print("BEGIN")
         bmol.create()
+
+        if traj:
+            while(read_status):
+                read_status = reader.read(bmol)
+                bmol.update()
+
 
         return{'FINISHED'}
 

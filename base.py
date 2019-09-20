@@ -89,19 +89,19 @@ class Base(object):
                 #print("EINS", name)
                 return self.getobjattr(name)
             else:
-                print("ZWEI", name, type(self).__name__)
+                #print("ZWEI", name, type(self).__name__)
                 return super().__getattr__(self, name)
         except:
             raise AttributeError(name)
 
     def __setattr__(self, name, value):
-        print("NAMENAME", name, value)
+        #print("NAMENAME", name, value)
         try:
             if name[0] != '_' and name not in self._get_slots():
-                print("EINS")
+                #print("EINS")
                 self.setobjattr(name, value)
             else:
-                print("ZWEI")
+                #print("ZWEI")
                 super().__setattr__(name, value)
         except:
             pass
@@ -482,10 +482,10 @@ class Object(Base):
         self.setobjattr('rotation_euler', value)
 
     @property
-    def hide(self): return self.getobjattr('hide') and self.getobjattr('hide_render')
+    def hide(self): return self.getobjattr('hide_viewport') and self.getobjattr('hide_render')
     @hide.setter
     def hide(self, value):
-        self.setobjattr('hide', value)
+        self.setobjattr('hide_viewport', value)
         self.setobjattr('hide_render', value)
 
     def setActive(self):
