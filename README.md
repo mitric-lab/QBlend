@@ -18,8 +18,8 @@
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery8.png" width="23%"></img>
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery9.png" width="23%"></img>
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery10.png" width="23%"></img>
-<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery11.png" width="23%"></img>
-<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery12.png" width="23%"></img> 
+<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery12.png" width="23%"></img>
+<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery13.png" width="23%"></img> 
 
 
 ### Getting Started (2.79)
