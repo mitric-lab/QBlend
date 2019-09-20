@@ -15,17 +15,17 @@
 
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery5.png" width="23%"></img>
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery7.png" width="23%"></img>
-<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery8.png" width="23%"></img>
+<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery10.png" width="23%"></img>
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery9.png" width="23%"></img>
 
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery4.png" width="23%"></img>
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery12.png" width="23%"></img>
-<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery10.png" width="23%"></img>
+<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery8.png" width="23%"></img>
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery14.png" width="23%"></img>
 
-<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery6.png" width="23%"></img>
-<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery2.png" width="23%"></img>
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery15.png" width="23%"></img>
+<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery2.png" width="23%"></img>
+<img src="https://github.com/hochej/QBlend/blob/master/docs/gallery6.png" width="23%"></img>
 
 
 ### Getting Started (2.79)
