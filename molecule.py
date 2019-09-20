@@ -625,7 +625,7 @@ class MoleculeRepr(ReprBase):
 		obj = make_bond(iobj, jobj, size, bond_style, twocolor, bond_reso)
 		obj.name = name
 		obj.hide = True
-		obj.notify('hide_viewport', 'hide_render', frame=0)
+		#obj.notify('hide_viewport', 'hide_render', frame=0)
 		obj.hide = False
 
 		self.bond_objects[(i,j)] = obj
@@ -772,7 +772,7 @@ class RingsRepr(ReprBase):
 		obj = meshes.Mesh("Ring")
 		obj.create(verts, edges, [range(len(ring))])
 		obj.material = mat
-		obj.addAutoKey('data.vertices.co', 'hide_viewport', 'hide_render')
+		obj.addAutoKey('data.vertices.co')#, 'hide_viewport', 'hide_render')
 
 		self.append(obj)
 		self._rings[tuple(ring)] = obj

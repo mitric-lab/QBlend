@@ -323,7 +323,7 @@ class OBJECT_OT_import_structure_button(bpy.types.Operator):
 
         traj = context.window_manager.toggle_buttons.trajectory
 
-        bmol = Molecule(auto_bonds=True, align_com = False, atom_scale=1.)
+        bmol = Molecule(auto_bonds=True, align_com = True, atom_scale=1.)
         bmol.options.atom_scale = 1.0
         #reader = XyzFile("/Users/hochej/14.xyz", "r")
         reader = XyzFile(bpy.context.scene.MyString)

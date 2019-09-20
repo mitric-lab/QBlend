@@ -203,6 +203,7 @@ class Base(object):
                 for p in data_path:
                     self.keyframe_insert(p, index, frame, group)
             elif isinstance(data_path, str):
+                print("KEYFRAME")
                 insert_blender_keyframe(self._bpy, data_path, index, frame, group)
         return self
 

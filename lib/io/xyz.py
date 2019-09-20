@@ -50,7 +50,6 @@ class XyzFile(MoleculeFile):
             pass
         except:
             print("ERROR LINE: %d" % self._iline)
-            print(line)
             raise
 
         if iatom == 0:
