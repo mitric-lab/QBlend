@@ -15,7 +15,7 @@ _data_switch = {
 
 
 resolution = 1
-auto_animate = False
+auto_animate = True
 scene = bpy.context.scene
 data = bpy.data
 #objects = bpy.context.scene.objects

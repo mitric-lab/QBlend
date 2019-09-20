@@ -625,7 +625,7 @@ class MoleculeRepr(ReprBase):
 		obj = make_bond(iobj, jobj, size, bond_style, twocolor, bond_reso)
 		obj.name = name
 		obj.hide = True
-		obj.notify('hide_viewport', 'hide_render', frame=-1000)
+		obj.notify('hide_viewport', 'hide_render', frame=0)
 		obj.hide = False
 
 		self.bond_objects[(i,j)] = obj
@@ -665,7 +665,6 @@ class MoleculeRepr(ReprBase):
 		else:
 			for (i,j), obj in self.bond_objects.items():
 				obj.update()
-
 		return super().update(molecule, *args, **kw)
 
 
