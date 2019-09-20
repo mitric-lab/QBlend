@@ -28,7 +28,7 @@
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery6.png" width="23%"></img>
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery18.png" width="23%"></img>
 
-### Getting Started (2.79)
+### Getting Started 
 
 1. Open Blender 2.8X
 2. Switch from the 3D editor the text editor
