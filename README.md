@@ -2,7 +2,7 @@
   <img src="https://github.com/hochej/QBlend/blob/master/docs/logo.svg" height="110"/>
 </div>
 
-3D Molecular Visualization in Blender 2.8X
+3D Molecular Visualization in Blender 2.8
 =============================================
 [![Build Status](https://travis-ci.org/hochej/QBlend.svg?branch=master)](https://travis-ci.org/hochej/QBlend)
 
@@ -28,7 +28,7 @@
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery6.png" width="23%"></img>
 <img src="https://github.com/hochej/QBlend/blob/master/docs/gallery18.png" width="23%"></img>
 
-### Getting Started 
+### Getting Started
 
 1. Open Blender 2.8X
 2. Switch from the 3D editor the text editor
