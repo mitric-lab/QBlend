@@ -377,8 +377,7 @@ class OBJECT_OT_import_cube_button(bpy.types.Operator):
     def invoke(self, context, event):
         #when the button is press it print this to the log
         print("Load Molecule")
-        print("pat
-        h:",bpy.context.scene.MyString2)
+        print("path:",bpy.context.scene.MyString2)
         import sys
         sys.path.append(blender_resources_dir + "/scripts/addons/qblend/")
         from lib.io import XyzFile
