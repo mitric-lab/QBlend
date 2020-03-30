@@ -15,8 +15,6 @@ import pathlib
 
 
 qblend_dir = str(pathlib.Path(__file__).parent.absolute())
-blender_resources_dir = qblend_dir + "/../../../"
-
 
 bohrToAngs = 0.529
 
@@ -476,11 +474,11 @@ class OBJECT_OT_automatic_ligthning_button(bpy.types.Operator):
         a = 0.035
         bg2.inputs['Color'].default_value = [a, a, a, 1.]
 
-        path = blender_resources_dir + "/datafiles/studiolights/world/forest.exr"
+        path = qblend_dir + "/world/forest.exr"
         env.image = bpy.data.images.load(path)
-        path = blender_resources_dir + "/datafiles/studiolights/world/studio.exr"
+        path = qblend_dir + "/world/studio.exr"
         env2.image = bpy.data.images.load(path)
-        path = blender_resources_dir + "/datafiles/studiolights/world/night.exr"
+        path = qblend_dir + "/world/night.exr"
         env3.image = bpy.data.images.load(path)
 
         #bpy.context.scene.render.alpha_mode = 'TRANSPARENT'
