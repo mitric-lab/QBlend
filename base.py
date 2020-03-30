@@ -2,8 +2,9 @@ import bpy, mathutils, copy
 from . import Blender
 from .utils import *
 
+
+
 import sys,os
-sys.path.append("/Applications/blender.app/Contents/Resources/2.80/scripts/addons/qblend/lib/")
 from lib import AttrDict
 from _ctypes import ArgumentError
 

@@ -2,7 +2,6 @@
 #import sys
 #sys.path.append("/Users/hochej/.local/lib/python2.7/site-packages/")
 import numpy as np
-from scipy.spatial.distance import pdist, squareform
 import abc, copy
 from .utils import is_numeric, is_string, is_integer, iterable, normalized
 from .utils import SlotPickleMixin, to_angstrom
@@ -285,8 +284,9 @@ class Molecule(SlotPickleMixin):
         return self
 
     def distances(self, metric='sqeuclidean', **kw):
-        from scipy.spatial.distance import pdist, squareform
-        return squareform(pdist(self.coords, metric, **kw))
+        dist = lambda p1, p2: ((p1-p2)**2).sum()
+        dm = np.asarray([[dist(p1, p2) for p2 in self.coords] for p1 in self.coords])
+        return dm
 
     def generate_bonds(self, tol=1.2, use_chain = True):
         if len(self._bonds) > 0:
@@ -314,7 +314,8 @@ class Molecule(SlotPickleMixin):
         for chstart, chstop in chains:
             #print(chstart, chstop)
             chainlen = chstop - chstart
-            dists = squareform(pdist(self.coords[chstart:chstop,:], 'sqeuclidean'))
+            dist = lambda p1, p2: ((p1-p2)**2).sum()
+            dists = np.asarray([[dist(p1, p2) for p2 in self.coords[chstart:chstop,:]] for p1 in self.coords[chstart:chstop,:]])
             #print(chstart, chstop, len(self.atoms))
             for i in range(chainlen):
                 for j in range(i, chainlen):

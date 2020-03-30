@@ -13,6 +13,9 @@ import time
 #from .molecule import Molecule
 #from .marching_cube import triangulate
 
+blender_resources_dir = "/Applications/blender.app/Contents/Resources/2.81"
+
+
 bohrToAngs = 0.529
 
 bpy.types.Scene.MyString = StringProperty(name="Path:",
@@ -96,7 +99,7 @@ class PANEL_PT_molecule_panel(View3DPanel, bpy.types.Panel):
         #shader = context.window_manager.shader_toggle.shader
         if context.window_manager.toggle_buttons.shader != "Diffuse":
             row = box.row()
-            row.prop(context.window_manager.toggle_buttons, "roughness")
+            row.prop(context.window_manager.toggle_buttons, "roughness", expand=True)
         row = box.row()
         row.prop(context.window_manager.toggle_buttons, "carbon_color")
         row = box.row()
@@ -158,7 +161,9 @@ class PANEL_PT_molecule_panel(View3DPanel, bpy.types.Panel):
         row.label(text="General Settings")
         row = box.row()
         row.operator("object.automatic_ligthning_button")
-
+        row = box.row()
+        row.prop(context.window_manager.toggle_buttons, "weight1")
+        row.prop(context.window_manager.toggle_buttons, "weight2")
         row = box.row()
         row.operator("object.lookdev_button")
         row.operator("object.rendered_button")
@@ -202,6 +207,15 @@ class ToggleButtons(bpy.types.PropertyGroup):
     default='Principled'
 )
 
+    roughness : bpy.props.EnumProperty(
+    items=[
+        ("0.0", 'Glossy', 'Use roughness of 0.0', '', 0),
+        ("0.3", 'Semi', 'Use roughness of 0.3', '', 1),
+        ("0.5", 'Diffuse', 'Use roughness of 0.5', '', 2)
+    ],
+    default="0.3"
+)
+
     roughness_cube : bpy.props.FloatProperty(name="Roughness", default=0, soft_min=0.0, soft_max=1.0,
                                         min=0.0, max=1.0)
 
@@ -219,8 +233,7 @@ class ToggleButtons(bpy.types.PropertyGroup):
                                      )
 
     hbonds : bpy.props.BoolProperty(name="Hydrogen Bonds")
-    roughness : bpy.props.FloatProperty(name="Roughness", default=0, soft_min=0.0, soft_max=1.0,
-                                        min=0.0, max=1.0)
+
     hbond_color : bpy.props.FloatVectorProperty(
                                      name = "H-Bond Color",
                                      subtype = "COLOR",
@@ -294,6 +307,12 @@ class ToggleButtons(bpy.types.PropertyGroup):
                                      )
 
 
+    weight1: bpy.props.FloatProperty(name="", default=0.95, soft_min=0.0, soft_max=1.0,
+                                        min=-2.0, max=2.0, description="""Weight of studiolights""")
+
+    weight2: bpy.props.FloatProperty(name="", default=0.1, soft_min=0.0, soft_max=1.0,
+                                        min=-2.0, max=2.0, description="""Weight of studiolights""")
+
 class OBJECT_OT_import_structure_button(bpy.types.Operator):
     bl_idname = "object.import_structure_button"
     bl_label = "Import Structure"
@@ -304,7 +323,7 @@ class OBJECT_OT_import_structure_button(bpy.types.Operator):
         print("Load Molecule")
         print("path:",bpy.context.scene.MyString)
         import sys
-        sys.path.append("/Applications/blender.app/Contents/Resources/2.80/scripts/addons/qblend/")
+        sys.path.append(blender_resources_dir + "/scripts/addons/qblend/")
         from lib.io import XyzFile
         from .molecule import Molecule
         from .base import Object
@@ -327,9 +346,11 @@ class OBJECT_OT_import_structure_button(bpy.types.Operator):
         bmol.options.atom_scale = 1.0
         #reader = XyzFile("/Users/hochej/14.xyz", "r")
         reader = XyzFile(bpy.context.scene.MyString)
+        if shader == "Diffuse":
+            shader = "Principled"
         bmol.options.shader = shader
         bmol.options.stick_size = stick_size
-        bmol.options.roughness = roughness
+        bmol.options.roughness = float(roughness)
         if style == "vdw":
             bmol.options.atom_size = "vdw_radius"
         bmol.options.carbon_color = context.window_manager.toggle_buttons.carbon_color
@@ -356,9 +377,10 @@ class OBJECT_OT_import_cube_button(bpy.types.Operator):
     def invoke(self, context, event):
         #when the button is press it print this to the log
         print("Load Molecule")
-        print("path:",bpy.context.scene.MyString2)
+        print("pat
+        h:",bpy.context.scene.MyString2)
         import sys
-        sys.path.append("/Applications/blender.app/Contents/Resources/2.80/scripts/addons/qblend/")
+        sys.path.append(blender_resources_dir + "/scripts/addons/qblend/")
         from lib.io import XyzFile
         from .molecule import Molecule
         from .base import Object
@@ -370,9 +392,9 @@ class OBJECT_OT_import_cube_button(bpy.types.Operator):
         stick_size = s_size[stick_size-1]
         style = context.window_manager.toggle_buttons.style
         shader = context.window_manager.toggle_buttons.shader
-        roughness = context.window_manager.toggle_buttons.roughness
+        roughness = float(context.window_manager.toggle_buttons.roughness)
         shader_c = context.window_manager.toggle_buttons.shader_cube
-        roughness_c = context.window_manager.toggle_buttons.roughness_cube
+        roughness_c = float(context.window_manager.toggle_buttons.roughness_cube)
         isovalue1  = context.window_manager.toggle_buttons.isovalue1
         isovalue2 = context.window_manager.toggle_buttons.isovalue2
         iso1 = isovalue1 * 10**(isovalue2)
@@ -381,21 +403,24 @@ class OBJECT_OT_import_cube_button(bpy.types.Operator):
         bmol.options.stick_size = stick_size
         bmol.options.atom_scale = 1.0
         bmol.options.shader = shader
-        bmol.options.roughness = roughness
+        bmol.options.roughness = 0.1#roughness
         if style == "vdw":
             bmol.options.atom_size = "vdw_radius"
         bmol.options.carbon_color = context.window_manager.toggle_buttons.carbon_color
         bmol.add_repr(style)
         bmol.options.shader = shader_c
-        bmol.options.roughness = roughness_c
+        bmol.options.roughness = 0.1# roughness_c
         reprTD = bmol.add_repr('isosurface', "TD", "CubeData", [iso1, -iso1],
                                 draw_box=False, on_update='remove')
 
 
-        cube = CubeFile(bpy.context.scene.MyString2)
-        cube.read(bmol)
-
         bmol.create()
+        for i in range(2):
+            cube = CubeFile(bpy.context.scene.MyString2)
+            cube.read(bmol)
+            bmol.update()
+
+        #bmol.create()
         return{'FINISHED'}
 
 
@@ -407,30 +432,57 @@ class OBJECT_OT_automatic_ligthning_button(bpy.types.Operator):
     def invoke(self, context, event):
         #when the button is press it print this to the log
         import sys
-        sys.path.append("/Applications/blender.app/Contents/Resources/2.80/scripts/addons/qblend/")
+        sys.path.append(blender_resources_dir + "/scripts/addons/qblend/")
 
         world_tree = bpy.data.worlds[0].node_tree
         w_out = world_tree.nodes['World Output']
         mixer = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeMixShader")
+        mixer2 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeMixShader")
+        mixer3 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeMixShader")
         env = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeTexEnvironment")
+        env2 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeTexEnvironment")
+        env3 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeTexEnvironment")
         bg1 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeBackground")
         bg2 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeBackground")
+        bg3 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeBackground")
+        bg4 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeBackground")
+        value1 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeValue")
+        value2 = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeValue")
 
         light_p = bpy.data.worlds[0].node_tree.nodes.new(type="ShaderNodeLightPath")
 
         world_tree.links.new(light_p.outputs['Is Camera Ray'], mixer.inputs[0])
-        world_tree.links.new(bg1.outputs["Background"], mixer.inputs[1])
+        world_tree.links.new(value1.outputs['Value'], mixer2.inputs[0])
+        world_tree.links.new(value2.outputs['Value'], mixer3.inputs[0])
+        world_tree.links.new(bg1.outputs["Background"], mixer2.inputs[1])
+        world_tree.links.new(bg3.outputs["Background"], mixer3.inputs[1])
+        world_tree.links.new(bg4.outputs["Background"], mixer3.inputs[2])
+        world_tree.links.new(env2.outputs['Color'], bg3.inputs['Color'])
+        world_tree.links.new(env3.outputs['Color'], bg4.inputs['Color'])
+
+        world_tree.links.new(mixer3.outputs['Shader'], mixer2.inputs[2])
+        world_tree.links.new(mixer2.outputs['Shader'], mixer.inputs[1])
         world_tree.links.new(bg2.outputs["Background"], mixer.inputs[2])
         world_tree.links.new(mixer.outputs['Shader'], w_out.inputs['Surface'])
         world_tree.links.new(env.outputs['Color'], bg1.inputs['Color'])
 
+        w1 = context.window_manager.toggle_buttons.weight1
+        w2 = context.window_manager.toggle_buttons.weight2
+        value1.outputs['Value'].default_value = w1
+        value2.outputs['Value'].default_value = w2
+
+
         a = 0.035
         bg2.inputs['Color'].default_value = [a, a, a, 1.]
 
-        path = "/Applications/blender.app/Contents/Resources/2.80/datafiles/studiolights/world/forest.exr"
+        path = blender_resources_dir + "/datafiles/studiolights/world/forest.exr"
         env.image = bpy.data.images.load(path)
+        path = blender_resources_dir + "/datafiles/studiolights/world/studio.exr"
+        env2.image = bpy.data.images.load(path)
+        path = blender_resources_dir + "/datafiles/studiolights/world/night.exr"
+        env3.image = bpy.data.images.load(path)
 
-        bpy.context.scene.render.alpha_mode = 'TRANSPARENT'
+        #bpy.context.scene.render.alpha_mode = 'TRANSPARENT'
 
         return{'FINISHED'}
 

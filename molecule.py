@@ -15,7 +15,7 @@ from lib.utils import TimerCollection as Timer
 from lib.volume import BoundaryVolumeData
 
 
-atom_radii_period = {1: 0.4, 2: 0.7, 3: 1.0, 4: 1.3, 5: 1.7}
+atom_radii_period = {1: 0.4, 2: 0.7, 3: 1.0, 4: 1.3, 5: 1.7, 6:1.8}
 
 def make_atom_material(name):#, color=(0., 0., 1., 1), shader="Glossy", roughness=0.0):
 	mat = bpy.data.materials.new(name) # create new material
