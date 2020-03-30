@@ -13,7 +13,7 @@ import time
 #from .molecule import Molecule
 #from .marching_cube import triangulate
 
-blender_resources_dir = "/Applications/blender.app/Contents/Resources/2.81"
+blender_resources_dir = r"/Applications/blender.app/Contents/Resources/2.81"
 
 
 bohrToAngs = 0.529
