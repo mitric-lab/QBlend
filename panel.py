@@ -5,7 +5,7 @@ import itertools
 from mathutils import Vector
 import numpy as np
 import time
-
+import pathlib
 #from . import Blender
 #from . import materials, meshes, curves, collections
 #from .base import Object, Material, LazyMaterial, Empty
@@ -13,7 +13,9 @@ import time
 #from .molecule import Molecule
 #from .marching_cube import triangulate
 
-blender_resources_dir = r"/Applications/blender.app/Contents/Resources/2.81"
+
+qblend_dir = str(pathlib.Path(__file__).parent.absolute())
+blender_resources_dir = qblend_dir + "/../../../"
 
 
 bohrToAngs = 0.529
@@ -323,7 +325,7 @@ class OBJECT_OT_import_structure_button(bpy.types.Operator):
         print("Load Molecule")
         print("path:",bpy.context.scene.MyString)
         import sys
-        sys.path.append(blender_resources_dir + "/scripts/addons/qblend/")
+        sys.path.append(qblend_dir)
         from lib.io import XyzFile
         from .molecule import Molecule
         from .base import Object
@@ -379,7 +381,7 @@ class OBJECT_OT_import_cube_button(bpy.types.Operator):
         print("Load Molecule")
         print("path:",bpy.context.scene.MyString2)
         import sys
-        sys.path.append(blender_resources_dir + "/scripts/addons/qblend/")
+        sys.path.append(qblend_dir)
         from lib.io import XyzFile
         from .molecule import Molecule
         from .base import Object
@@ -431,7 +433,7 @@ class OBJECT_OT_automatic_ligthning_button(bpy.types.Operator):
     def invoke(self, context, event):
         #when the button is press it print this to the log
         import sys
-        sys.path.append(blender_resources_dir + "/scripts/addons/qblend/")
+        sys.path.append(qblend_dir)
 
         world_tree = bpy.data.worlds[0].node_tree
         w_out = world_tree.nodes['World Output']
