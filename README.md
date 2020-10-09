@@ -4,7 +4,7 @@
 
 3D Molecular Visualization in Blender 2.8
 =============================================
-[![Build Status](https://travis-ci.org/hochej/QBlend.svg?branch=master)](https://travis-ci.org/hochej/QBlend)
+### The functionality of this Blender addon is currently very limited!
 
 ### Examples (Gallery)
 
