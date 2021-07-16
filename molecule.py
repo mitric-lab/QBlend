@@ -583,10 +583,10 @@ class MoleculeRepr(ReprBase):
 				self.timer.tick('bonds')
 				self.create_bond(molecule, i,j, irep, jrep)
 				self.timer.tock('bonds')
-
-			if  (n % int(0.1*nbonds)) == 0:
-				print("	%3.0f%% %4d/%d bonds processed (t = %.3f)" \
-					  % (n/float(nbonds)*100, n, nbonds, self.timer['bonds'].total))
+			if nbonds > 50:
+				if  (n % int(0.1*nbonds)) == 0:
+					print("	%3.0f%% %4d/%d bonds processed (t = %.3f)" \
+						  % (n/float(nbonds)*100, n, nbonds, self.timer['bonds'].total))
 
 			wm.progress_update(n)
 		wm.progress_end()
