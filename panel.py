@@ -193,7 +193,8 @@ class ToggleButtons(bpy.types.PropertyGroup):
     items=[
         ('Diffuse', 'Diffuse', 'Use diffuse shader', '', 0),
         ('Glossy', 'Glossy', 'Use glossy shader', '', 1),
-        ('Principled', 'Plastic', 'Use Principled BSDF shader', '', 2)
+        ('Principled', 'Plastic', 'Use Principled BSDF shader', '', 2),
+        ('Fancy', 'Fancy', 'Use fancy shader', '', 3)
     ],
     default='Principled'
 )
@@ -202,7 +203,7 @@ class ToggleButtons(bpy.types.PropertyGroup):
     items=[
         ('Diffuse', 'Diffuse', 'Use diffuse shader', '', 0),
         ('Glossy', 'Glossy', 'Use glossy shader', '', 1),
-        ('Principled', 'Plastic', 'Use Principled BSDF shader', '', 2)
+        ('Principled', 'Plastic', 'Use Principled BSDF shader', '', 2),
     ],
     default='Principled'
 )
@@ -333,7 +334,7 @@ class OBJECT_OT_import_structure_button(bpy.types.Operator):
         #object2 = UVsphere()
         #from .Blender import clear_objects, save_blend, render_image
 
-        s_size = [0.15, 0.2, 0.25]
+        s_size = [0.15, 0.2, 0.35]
         stick_size = int(context.window_manager.toggle_buttons.stick_size)
         stick_size = s_size[stick_size-1]
         style = context.window_manager.toggle_buttons.style
@@ -406,6 +407,10 @@ class OBJECT_OT_import_cube_button(bpy.types.Operator):
         if style == "vdw":
             bmol.options.atom_size = "vdw_radius"
         bmol.options.carbon_color = context.window_manager.toggle_buttons.carbon_color
+        for i in range(2):
+            cube = CubeFile(bpy.context.scene.MyString2)
+            cube.read(bmol)
+
         bmol.add_repr(style)
         bmol.options.shader = shader_c
         bmol.options.roughness = 0.1# roughness_c
@@ -414,10 +419,7 @@ class OBJECT_OT_import_cube_button(bpy.types.Operator):
 
 
         bmol.create()
-        for i in range(2):
-            cube = CubeFile(bpy.context.scene.MyString2)
-            cube.read(bmol)
-            bmol.update()
+        #bmol.update()
 
         #bmol.create()
         return{'FINISHED'}

@@ -55,10 +55,12 @@ Colors = {
 				6: getColor('darkgrey'),
 				7: getColor('blue'),
 				8: getColor('red'),
+				9: getColor('pink'),
 				13: getColor('tan'),
 				15: getColor('tan'),
 				17: getColor('lightgreen'),
 				47: getColor('silver'),
+				77: getColor('silver'),
 				79: getColor('gold'),
 			   },
 	'Residue': {'ALA': getColor('grey'),
@@ -452,16 +454,70 @@ class ReprBase(ObjectCollection):
 		if name not in self._materials:
 			mat = mat.copy()
 			mat.node_tree.nodes.remove(mat.node_tree.nodes[1])
-			shader = mat.node_tree.nodes.new(type="ShaderNodeBsdf"+shader) # create new node
-			shader.inputs['Roughness'].default_value = roughness
-			print("INPUT", mat.node_tree.nodes.get("Material Output").inputs)
-			mat_input = mat.node_tree.nodes.get("Material Output").inputs[0]
-			mat.node_tree.links.new(shader.outputs["BSDF"], mat_input)
-			mat.name = name
-			if col != None:
-				print("COLOR", mat)#, mat.diffuse_color)
-				mat.diffuse_color = [col[0], col[1], col[2], 1.] #col
-				mat.node_tree.nodes[1].inputs[0].default_value = [col[0], col[1], col[2], 1.]
+			print("SHADERSHADERSHADER", shader)
+			if shader == "Fancy":
+				print("COLCOLCOLCOLID", col_id.split("-")[1])
+				if col_id.split("-")[1] == "7":
+					shader = mat.node_tree.nodes.new(type="ShaderNodeBsdfPrincipled") # create new node
+					shader.inputs['Roughness'].default_value = 0.00
+					shader.inputs['Metallic'].default_value = 0.748
+					shader.inputs['Specular'].default_value = 0.302
+					print("INPUT", mat.node_tree.nodes.get("Material Output").inputs)
+					mat_input = mat.node_tree.nodes.get("Material Output").inputs[0]
+					mat.node_tree.links.new(shader.outputs["BSDF"], mat_input)
+					mat.name = name
+					col = [0.187, 0.209, 1.000]
+					mat.diffuse_color = [col[0], col[1], col[2], 1.] #col
+					mat.node_tree.nodes[1].inputs[0].default_value = [col[0], col[1], col[2], 1.]
+				elif col_id.split("-")[1] == "77":
+					shader = mat.node_tree.nodes.new(type="ShaderNodeBsdfPrincipled") # create new node
+					shader.inputs['Roughness'].default_value = 0.245
+					shader.inputs['Metallic'].default_value = 1.000
+					shader.inputs['Specular'].default_value = 0.5000
+					print("INPUT", mat.node_tree.nodes.get("Material Output").inputs)
+					mat_input = mat.node_tree.nodes.get("Material Output").inputs[0]
+					mat.node_tree.links.new(shader.outputs["BSDF"], mat_input)
+					mat.name = name
+					col = [0.800, 0.047, 0.159]
+					mat.diffuse_color = [col[0], col[1], col[2], 1.] #col
+					mat.node_tree.nodes[1].inputs[0].default_value = [col[0], col[1], col[2], 1.]
+				elif col_id.split("-")[1] == "9":
+					shader = mat.node_tree.nodes.new(type="ShaderNodeBsdfPrincipled") # create new node
+					shader.inputs['Roughness'].default_value = 0.00
+					shader.inputs['Metallic'].default_value = 0.748
+					shader.inputs['Specular'].default_value = 0.302
+					print("INPUT", mat.node_tree.nodes.get("Material Output").inputs)
+					mat_input = mat.node_tree.nodes.get("Material Output").inputs[0]
+					mat.node_tree.links.new(shader.outputs["BSDF"], mat_input)
+					mat.name = name
+					col = [0.637, 0.890, 0.000]
+					mat.diffuse_color = [col[0], col[1], col[2], 1.] #col
+					mat.node_tree.nodes[1].inputs[0].default_value = [col[0], col[1], col[2], 1.]
+				else:
+					shader = mat.node_tree.nodes.new(type="ShaderNodeBsdfGlossy") # create new node
+					shader.inputs['Roughness'].default_value = 0.00
+					print("INPUT", mat.node_tree.nodes.get("Material Output").inputs)
+					mat_input = mat.node_tree.nodes.get("Material Output").inputs[0]
+					mat.node_tree.links.new(shader.outputs["BSDF"], mat_input)
+					mat.name = name
+					if col != None:
+						if col_id.split("-")[1] == "6":
+							col = [0.377, 0.377, 0.377]
+						if col_id.split("-")[1] == "1":
+							col = [0.8, 0.8, 0.8]
+						mat.diffuse_color = [col[0], col[1], col[2], 1.] #col
+						mat.node_tree.nodes[1].inputs[0].default_value = [col[0], col[1], col[2], 1.]
+			else:
+				shader = mat.node_tree.nodes.new(type="ShaderNodeBsdf"+shader) # create new node
+				shader.inputs['Roughness'].default_value = roughness
+				print("INPUT", mat.node_tree.nodes.get("Material Output").inputs)
+				mat_input = mat.node_tree.nodes.get("Material Output").inputs[0]
+				mat.node_tree.links.new(shader.outputs["BSDF"], mat_input)
+				mat.name = name
+				if col != None:
+					print("COLOR", mat)#, mat.diffuse_color)
+					mat.diffuse_color = [col[0], col[1], col[2], 1.] #col
+					mat.node_tree.nodes[1].inputs[0].default_value = [col[0], col[1], col[2], 1.]
 
 			for k, w in self._matoptions:
 				mat['k'] = w
@@ -584,9 +640,10 @@ class MoleculeRepr(ReprBase):
 				self.create_bond(molecule, i,j, irep, jrep)
 				self.timer.tock('bonds')
 
-			if  (n % int(0.1*nbonds)) == 0:
-				print("	%3.0f%% %4d/%d bonds processed (t = %.3f)" \
-					  % (n/float(nbonds)*100, n, nbonds, self.timer['bonds'].total))
+			if nbonds > 100:
+				if  (n % int(0.1*nbonds)) == 0:
+					print("	%3.0f%% %4d/%d bonds processed (t = %.3f)" \
+						  % (n/float(nbonds)*100, n, nbonds, self.timer['bonds'].total))
 
 			wm.progress_update(n)
 		wm.progress_end()
@@ -611,7 +668,7 @@ class MoleculeRepr(ReprBase):
 			elif not jrep:
 				jr = molecule.find_atom_repr(molecule.atoms[j])
 				if not jr or jr > self: return None
-
+		print("BONDINDICES", i, j, ir.atom_objects, molecule.atoms, ir)
 		iobj = ir.atom_objects[i]
 		jobj = jr.atom_objects[j]
 
@@ -620,7 +677,7 @@ class MoleculeRepr(ReprBase):
 		twocolor = self.options.bond_twocolor
 		size = self.bond_size(molecule, i, j)
 		name = 'Bond-%04d-%04d' % (i,j)
-		#print(i,j,bond_style, twocolor, bond_reso)
+		print(i,j,bond_style, twocolor, bond_reso)
 
 		obj = make_bond(iobj, jobj, size, bond_style, twocolor, bond_reso)
 		obj.name = name

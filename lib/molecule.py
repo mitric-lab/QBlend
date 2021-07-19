@@ -321,7 +321,6 @@ class Molecule(SlotPickleMixin):
                 for j in range(i, chainlen):
                     ii, jj = chstart + i, chstart + j
 
-
                     if dists[i,j] > 0.01 and dists[i,j] <= ((dcov[ii]+dcov[jj])*tol)**2:
                         conn[ii].append(jj)
                         conn[jj].append(ii)

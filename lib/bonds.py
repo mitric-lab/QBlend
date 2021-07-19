@@ -32,6 +32,7 @@ class Bonds(SlotPickleMixin):
         if isinstance(conn, list):
             self.__conn = {x: set(y) for x, y in enumerate(conn)}
         self.__nmax = nmax if nmax else (max(self.__conn.keys()) if len(self.__conn) else 0)
+        print(self.__conn)
         self.__size = nconn if conn and nconn else sum([len(c) for c in self.__conn])/2
 
     def __len__(self):
