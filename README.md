@@ -2,9 +2,15 @@
   <img src="https://github.com/hochej/QBlend/blob/master/docs/logo.svg" height="110"/>
 </div>
 
-3D Molecular Visualization in Blender 2.8
+3D Molecular Visualization in Blender 2.8.1
 =============================================
-### The functionality of this Blender addon is currently very limited!
+
+This add-on creates a side toolbar in Blender, that allows to import molecular structures from xyz-files. Additionally it is also possible to import orbitals/electron densities from cube files. <br>
+<img src="https://github.com/hochej/QBlend/blob/master/docs/q_blend_toolbar.png" width="23%"></img>
+
+### Install 
+
+Download the zip file and follow the Blender Add-on [installation instructions](https://docs.blender.org/manual/en/latest/editors/preferences/addons.html#installing-add-ons)
 
 ### Examples (Gallery)
 
